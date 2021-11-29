@@ -10,6 +10,10 @@ class FiniteField:
     def one(self):
         return FiniteFieldElement(1, self)
 
+    @property
+    def zero(self):
+        return FiniteFieldElement(0, self)
+
     def nonzero_element(self):
         for i in range(1, self.order):
             yield FiniteFieldElement(i, self)
@@ -20,6 +24,24 @@ class FiniteFieldElement:
     # Element of Finite Field
     number: int
     finite_field: FiniteField
+
+    def __post_init__(self):
+        self.number %= self.finite_field.order
+
+    def __mul__(self, other: 'FiniteFieldElement'):
+        return FiniteFieldElement(
+            self.number * other.number,
+            self.finite_field
+        )
+
+    def __add__(self, other: 'FiniteFieldElement'):
+        return FiniteFieldElement(
+            self.number + other.number,
+            self.finite_field
+        )
+
+    def is_zero(self):
+        return self.number == 0
 
 
 @dataclass

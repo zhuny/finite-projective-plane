@@ -16,11 +16,24 @@ class SubVectorSpace:
     vector_space: VectorSpace
     basis: List['Vector']
 
+    def is_orthogonal(self, other: 'SubVectorSpace'):
+        for base1 in self.basis:
+            for base2 in other.basis:
+                if not base1.is_orthogonal(base2):
+                    return False
+        return True
+
 
 @dataclass
 class Vector:
     vector_space: VectorSpace
     elements: List[Field]
+
+    def is_orthogonal(self, other: 'Vector'):
+        total_sum = self.vector_space.field.zero
+        for x, y in zip(self.elements, other.elements):
+            total_sum += x*y
+        return total_sum.is_zero()
 
 
 @dataclass
@@ -37,7 +50,7 @@ class ProjectivePlane:
             basis=[Vector(self.vector_space, [a, b, c])]
         )
 
-    def get_line_list(self):
+    def get_point_list(self):
         one = self.field.one
         for num1 in self.field.nonzero_element():
             for num2 in self.field.nonzero_element():
