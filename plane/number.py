@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Union
 
 
 @dataclass
@@ -25,3 +25,6 @@ class ExtensionFiniteFieldElement:
     # Element of Extension Finite Field
     extension_finite_field: ExtensionFiniteField
     numbers: List[FiniteFieldElement]
+
+
+Field = Union[FiniteField, ExtensionFiniteField]  # 사칙연산이 가능한 수 쳬계
