@@ -6,6 +6,14 @@ from typing import List, Union
 class FiniteField:
     order: int  # prime number
 
+    @property
+    def one(self):
+        return FiniteFieldElement(1, self)
+
+    def nonzero_element(self):
+        for i in range(1, self.order):
+            yield FiniteFieldElement(i, self)
+
 
 @dataclass
 class FiniteFieldElement:

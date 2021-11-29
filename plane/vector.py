@@ -30,3 +30,15 @@ class ProjectivePlane:
 
     def __post_init__(self):
         self.vector_space = VectorSpace(3, self.field)
+
+    def _build_one_dim(self, a, b, c):
+        return SubVectorSpace(
+            self.vector_space,
+            basis=[Vector(self.vector_space, [a, b, c])]
+        )
+
+    def get_line_list(self):
+        one = self.field.one
+        for num1 in self.field.nonzero_element():
+            for num2 in self.field.nonzero_element():
+                yield self._build_one_dim(one, num1, num2)
