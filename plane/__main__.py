@@ -3,6 +3,7 @@ from pathlib import Path
 
 from plane.number import FiniteField
 from plane.projective import construct
+from plane.util import is_prime
 
 
 def run():
@@ -14,10 +15,13 @@ def run():
         # Get degree of finite projective plane
         n = f.readline().strip()
         if not n.isdigit():
-            print("First line should be a prime number.")
+            print("First line should be a number.")
             return
 
         n = int(n)
+        if not is_prime(n):
+            print("Degree should be a prime number")
+            return
 
         # load element
         elements = set()
@@ -29,10 +33,7 @@ def run():
                   "greater than or equal to 'n*n+n+1'")
             return
 
-        structure = construct(
-            FiniteField(n),
-            list(elements)
-        )
+        structure = construct(FiniteField(n), list(elements))
         for g in structure:
             print(",".join(g))
 
