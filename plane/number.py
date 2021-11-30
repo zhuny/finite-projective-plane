@@ -14,8 +14,8 @@ class FiniteField:
     def zero(self):
         return FiniteFieldElement(0, self)
 
-    def nonzero_element(self):
-        for i in range(1, self.order):
+    def element_list(self):
+        for i in range(self.order):
             yield FiniteFieldElement(i, self)
 
 

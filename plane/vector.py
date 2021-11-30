@@ -51,7 +51,17 @@ class ProjectivePlane:
         )
 
     def get_point_list(self):
+        zero = self.field.zero
         one = self.field.one
-        for num1 in self.field.nonzero_element():
-            for num2 in self.field.nonzero_element():
+
+        # (1, x, y)
+        for num1 in self.field.element_list():
+            for num2 in self.field.element_list():
                 yield self._build_one_dim(one, num1, num2)
+
+        # (0, 1, x)
+        for num1 in self.field.element_list():
+            yield self._build_one_dim(zero, one, num1)
+
+        # (0, 0, 1)
+        yield self._build_one_dim(zero, zero, one)
