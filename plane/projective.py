@@ -12,11 +12,11 @@ def construct(field: Field, elements):
 
     assert len(line_list) == len(pair_list)
 
-    for normal in line_list:
-        plane_element = [
+    return [
+        [
             element
             for line, element in pair_list
             if line.is_orthogonal(normal)
         ]
-        print(plane_element)
-    print(len(line_list))
+        for normal in line_list
+    ]
