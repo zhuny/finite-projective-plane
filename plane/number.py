@@ -238,6 +238,20 @@ def find_irreducible(field: FiniteField, degree: int) -> Polynomial:
             if polynomial.is_irreducible():
                 return polynomial
 
+    if field.order > 2:
+        raise ValueError("May be strategy wrong")
+
+    for rep in range(5, min(100, 2**degree), 2):
+        lower = {degree: field.one}
+        for d in range(degree):
+            if rep & (1 << d):
+                lower[d] = field.one
+        polynomial = Polynomial(over=field, values=lower)
+        if polynomial.is_irreducible():
+            return polynomial
+
+    raise ValueError("I cannot find irreducible polynomial for given degree")
+
 
 def get_field(n: int) -> Field:
     factor = factorize(n)
