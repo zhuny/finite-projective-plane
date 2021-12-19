@@ -132,6 +132,15 @@ class Polynomial:
                     result.update(k1+k2, v1*v2)
             return Polynomial(over=self.over, values=result.body)
 
+    def __truediv__(self, other: FiniteFieldElement):
+        return Polynomial(
+            over=self.over,
+            values={
+                p: v / other
+                for p, v in self.values.items()
+            }
+        )
+
     def __mod__(self, other: 'Polynomial'):
         divisor = self
         q = Polynomial(over=self.over, values={})
@@ -150,42 +159,47 @@ class Polynomial:
 
         return divisor
 
+    def to_monic(self):
+        lead_coefficient = self.lead_coefficient
+        return self / lead_coefficient
+
     def gcd(self, other: 'Polynomial'):
         first, second = self, other
         if first.degree < second.degree:
             first, second = second, first
 
-        while not second.is_constant():
-            print("gcd-step", first.get_min(), second.get_min())
+        while not second.is_zero():
             first, second = second, first % second
 
-        print("gcd-step", first.get_min(), second.get_min())
-
-        return first
+        return first.to_monic()
 
     def is_constant(self):
         return self.degree == 0
 
     def is_irreducible(self) -> bool:
         # https://en.wikipedia.org/wiki/Factorization_of_polynomials_over_finite_fields#Rabin's_test_of_irreducibility
-        if len(self.values) == 0:
+        if self.degree < 1 == 0:
             return False
 
-        degree = max(self.values)
-        for p in factorize(degree):
+        for p in factorize(self.degree):
             test_polynomial = Polynomial(
                 over=self.over,
                 values={
-                    self.over.order ** (degree // p): self.over.one,
+                    self.over.order ** (self.degree // p): self.over.one,
                     1: -self.over.one
                 }
             )
-            print("two poly", test_polynomial.get_min(), self.get_min())
-            print("gcd", test_polynomial.gcd(self).get_min())
             if not test_polynomial.gcd(self).is_constant():
                 return False
 
-        return True
+        splitting = Polynomial(
+            over=self.over,
+            values={
+                self.over.order ** self.degree: self.over.one,
+                1: -self.over.one
+            }
+        )
+        return (splitting % self).is_zero()
 
     def get_min(self):
         return {k: v.number for k, v in self.values.items()}
