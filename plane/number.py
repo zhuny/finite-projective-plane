@@ -211,12 +211,41 @@ class ExtensionFiniteField:
     degree: int  # >= 2
     mod: Polynomial
 
+    @property
+    def zero(self):
+        return ExtensionFiniteFieldElement(
+            extension_finite_field=self,
+            numbers=Polynomial(
+                over=self.finite_field,
+                values={}
+            )
+        )
+
+    @property
+    def one(self):
+        return ExtensionFiniteFieldElement(
+            extension_finite_field=self,
+            numbers=Polynomial(
+                over=self.finite_field,
+                values={0: self.finite_field.one}
+            )
+        )
+
 
 @dataclass
 class ExtensionFiniteFieldElement:
     # Element of Extension Finite Field
     extension_finite_field: ExtensionFiniteField
     numbers: Polynomial
+
+    def __add__(self, other: 'ExtensionFiniteFieldElement'):
+        return ExtensionFiniteFieldElement(
+            extension_finite_field=self.extension_finite_field,
+            numbers=self.numbers+other.numbers
+        )
+
+    def is_zero(self):
+        return self.numbers.is_zero()
 
 
 Field = Union[FiniteField, ExtensionFiniteField]  # 사칙연산이 가능한 수 쳬계

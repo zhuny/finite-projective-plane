@@ -58,6 +58,13 @@ class CreateFieldTest(unittest.TestCase):
                         else:
                             self.assertIsInstance(field, ExtensionFiniteField)
 
+                        check = field.zero
+                        for _ in range(1, i):
+                            check += field.one
+                            self.assertFalse(check.is_zero())
+                        check += field.one
+                        self.assertTrue(check.is_zero())
+
 
 if __name__ == '__main__':
     unittest.main()
